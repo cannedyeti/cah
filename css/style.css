@@ -23,7 +23,8 @@ h1 {
   letter-spacing: -2px;
   max-width: 100px;
 }
-h1:after, .card h6:after {
+h1:after, .card h6:after,
+.answer-card h6:after {
   content: "™";
   font-size: 1rem;
   vertical-align: super;
@@ -31,15 +32,35 @@ h1:after, .card h6:after {
 }
 
 .card {
-  background: #231e1e;
-  border-color: black;
   color: white;
+  background: #231e1e;
+}
+
+.answer-card {
+  background: white;
+  color: black;
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+.card-back h4:after {
+  content: "Cards Against Humanity";
+  width: inherit;
+  font-size: 1.5em;
+  line-height: 1.2em;
+}
+
+.card,
+.answer-card {
+  border: 1px solid black;
+  border-radius: 15px;
   padding: 1rem;
   min-height: 16rem;
   position: relative;
 }
 
-.card h6 {
+.card h6,
+.answer-card h6 {
   position: absolute;
   font-size: 0.6rem;
   margin-top: 1.618rem;
@@ -47,13 +68,18 @@ h1:after, .card h6:after {
   bottom: 0.618rem;
   left: 1rem;
 }
-.card h6:after {
+.card h6:after,
+.answer-card h6:after {
   font-size: 60%;
   margin-left: 1px;
 }
 
 .row {
   margin: 0;
+}
+
+.selected {
+  border: 1px red solid;
 }
 
 footer {
