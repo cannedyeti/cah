@@ -1,11 +1,21 @@
-angular.module('CardCtrls', [])
-.controller('CardsCtrl', ['$scope', function($scope) {
-  $scope.cards = [
-    {question: "What is Batman's guilty pleasure?"},
-    {question: "I'm sorry professor, I couldn't complete my homework because _________."},
-    {question: "I get by with a little help from _________."},
-    {question: "_________. It's a trap!"},
-    {question: "The class field trip was completely ruined by _________."},
-    {question: "What's my secret power?"}
-  ];
+angular.module('CardsAgainstAssembly')
+.controller('CardsCtrl', ['$scope', "QuestionsFactory", "AnswersFactory", function($scope, QuestionsFactory, AnswersFactory) {
+  $scope.qCards = QuestionsFactory.getCards();
+  $scope.displayCard = $scope.qCards[pickCardIndex($scope.qCards.length)];
+  $scope.numPlayers = 3;
+  $scope.errorMessage = "";
+
+  $scope.$watch("numPlayers", function(newVal, oldVal){
+    $scope.errorMessage = "";
+    if(newVal < 3){
+      $scope.errorMessage = "Need at least 3 players";
+    } else if (newVal > 10){
+      $scope.errorMessage = "Too many players";
+    }
+  });
+
 }]);
+
+function pickCardIndex(size){
+  return Math.floor(Math.random() * size);
+}

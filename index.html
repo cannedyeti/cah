@@ -8,27 +8,20 @@
     <link rel="stylesheet" href="css/style.css">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.2.18/angular-ui-router.js"></script>
     <script src="js/app.js"></script>
     <script src="js/controllers.js"></script>
+    <script src="js/factories.js"></script>
   </head>
   <body>
     <div class="container">
       <header class='navbar'>
         <h1 class='pull-left'>Cards Against Assembly</h1>
+        <a href="/#/">Home</a>
+        <a href="/#/main">Main</a>
       </header>
 
-      <section id="cards" class='container-fluid' ng-controller="CardsCtrl">
-        <div class='row'>
-
-          <div class='col-sm-6 col-md-6 col-lg-4' ng-repeat="card in cards">
-            <div class='card'>
-              <h4 class="card-title">{{card.question}}</h4>
-              <h6>Cards Against Assembly</h6>
-            </div>
-          </div>
-
-        </div>
-      </section>
+      <div ui-view></div>
 
       <footer>
         <p>Made with <span class='heart'>♥︎</span> at General Assembly</p>
