@@ -12,8 +12,8 @@
 
     <div class="col-sm-8">
       <div class="row">
-        <div class='col-sm-3' ng-repeat="card in pot">
-            <div class='answer-card'>
+        <div class='col-sm-3' ng-repeat="(playerIndex, card) in pot">
+            <div class='answer-card' ng-click="!czarPicking || selectWinningAnswer(playerIndex)">
               <h4 class="card-title">{{card.answer}}</h4>
               <h6>Cards Against Assembly</h6>
             </div>
@@ -27,7 +27,8 @@
     <div class="row">
       <div class="col-xs-12">
         <p class="text-danger" ng-show="cardCzar === $index">YOU ARE CARD CZAR</p>
-        <h3>Player {{ $index+1 }}'s hand</h3>
+        <h3>Player {{ $index+1 }}'s hand <span>Points: {{ points[$index] }}</span></h3>
+        
       </div>
     </div>
     <div class="row">
