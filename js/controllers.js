@@ -8,6 +8,8 @@ angular.module('CardsAgainstAssembly')
   $scope.selectedAnswers = {};
   $scope.pot = [];
   $scope.czarPicking = false;
+  $scope.cardCzar = 0;
+  $scope.points = [];
 
   $scope.numPlayers = sharedProperties.getNumPlayers();
 
@@ -43,8 +45,9 @@ angular.module('CardsAgainstAssembly')
   };
 
   $scope.selectAnswers = function(playerIndex, card) {
-    $scope.selectedAnswers[playerIndex] = card;
-    console.log($scope.selectedAnswers);
+    if(playerIndex != $scope.cardCzar){
+      $scope.selectedAnswers[playerIndex] = card;
+    }
   };
 
 }])
