@@ -4,14 +4,29 @@ angular.module('CardsAgainstAssembly')
   $scope.displayCard = $scope.qCards[pickCardIndex($scope.qCards.length)];
   $scope.errorMessage = "";
   var CARDS_PER_PLAYER = 2;
+  var MAX_ROUNDS = 5;
   $scope.playerCards = [];
   $scope.selectedAnswers = {};
-  $scope.pot = [];
+  $scope.pot = {};
   $scope.czarPicking = false;
   $scope.cardCzar = 0;
   $scope.points = [];
+  $scope.round = 0;
+
+// FIND MAX OF ARRAY METHOD
+  Array.prototype.max = function() {
+    return Math.max.apply(null, this);
+  };
 
   $scope.numPlayers = sharedProperties.getNumPlayers();
+
+  // Initialize points array
+  if($scope.points.length === 0) {    
+    for (var i = 0; i < $scope.numPlayers; i++) {
+        $scope.points.push(0);
+      }
+  }
+
 
   for (i = 0; i < $scope.numPlayers; i++) {
     $scope.playerCards.push(shuffleArray(AnswersFactory.getCards(), CARDS_PER_PLAYER));
@@ -32,7 +47,7 @@ angular.module('CardsAgainstAssembly')
       //remove card from players hand and place cards into the pot
       for (var key in newAnswers) {
         if (newAnswers.hasOwnProperty(key)) {
-          $scope.pot.push($scope.playerCards[key].splice($scope.playerCards[key].indexOf(newAnswers[key]),1)[0]);
+          $scope.pot[key] = $scope.playerCards[key].splice($scope.playerCards[key].indexOf(newAnswers[key]),1)[0];
           //add new random card to players hand
           $scope.playerCards[key].push(shuffleArray(AnswersFactory.getCards(), 1)[0]);
         }
@@ -41,7 +56,8 @@ angular.module('CardsAgainstAssembly')
   });
 
   $scope.assignAnswers = function() {
-    sharedProperties.setNumPlayers($scope.numPlayers);
+    sharedProperties.setNumPlayers($scope.numPlayers);      
+
   };
 
   $scope.selectAnswers = function(playerIndex, card) {
@@ -49,6 +65,29 @@ angular.module('CardsAgainstAssembly')
       $scope.selectedAnswers[playerIndex] = card;
     }
   };
+
+  $scope.selectWinningAnswer = function(playerIndex) {
+      $scope.selectedAnswers = {};
+      $scope.points[playerIndex]++;
+      $scope.pot = {};
+      $scope.czarPicking = false;
+      if ($scope.cardCzar == $scope.numPlayers - 1){
+        $scope.cardCzar = 0;
+      } else {
+        $scope.cardCzar++
+      }
+      $scope.displayCard = $scope.qCards[pickCardIndex($scope.qCards.length)];
+      $scope.round++;
+      $scope.checkWin();
+  }
+
+  $scope.checkWin = function() {
+    if ($scope.round >= MAX_ROUNDS) {
+      var winner =  $scope.points.max();
+      alert("Player " + ($scope.points.indexOf(winner) + 1) + " won!")
+    }
+  }
+
 
 }])
 .service("sharedProperties", function(){
@@ -63,6 +102,8 @@ angular.module('CardsAgainstAssembly')
     }
   };
 });
+
+
 
 function pickCardIndex(size){
   return Math.floor(Math.random() * size);
