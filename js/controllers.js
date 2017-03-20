@@ -5,14 +5,15 @@ angular.module('CardsAgainstAssembly')
   $scope.errorMessage = "";
   var CARDS_PER_PLAYER = 2;
   $scope.playerCards = [];
-  $scope.selectedAnswers = [];
+  $scope.selectedAnswers = {};
+  $scope.pot = [];
+  $scope.czarPicking = false;
 
   $scope.numPlayers = sharedProperties.getNumPlayers();
 
   for (i = 0; i < $scope.numPlayers; i++) {
-        $scope.playerCards.push(shuffleArray(AnswersFactory.getCards(), CARDS_PER_PLAYER))
-      };
-      
+    $scope.playerCards.push(shuffleArray(AnswersFactory.getCards(), CARDS_PER_PLAYER));
+  }
 
   $scope.$watch("numPlayers", function(newVal, oldVal){
     $scope.errorMessage = "";
@@ -22,22 +23,29 @@ angular.module('CardsAgainstAssembly')
       $scope.errorMessage = "Too many players";
     }
   });
+
+  $scope.$watchCollection('selectedAnswers', function(newAnswers, oldAnswers) {
+    if(Object.keys(newAnswers).length === $scope.numPlayers-1){
+      $scope.czarPicking = true;
+      //remove card from players hand and place cards into the pot
+      for (var key in newAnswers) {
+        if (newAnswers.hasOwnProperty(key)) {
+          $scope.pot.push($scope.playerCards[key].splice($scope.playerCards[key].indexOf(newAnswers[key]),1)[0]);
+          //add new random card to players hand
+          $scope.playerCards[key].push(shuffleArray(AnswersFactory.getCards(), 1)[0]);
+        }
+      }
+    }
+  });
+
   $scope.assignAnswers = function() {
     sharedProperties.setNumPlayers($scope.numPlayers);
-  }
-  function shuffleArray(arr, limit) {
-    if(limit > arr.length) {
-      limit = arr.length;
-    }
-    var shuffled = arr.sort(function() {
-      return 0.5 - Math.random();
-    });
-    return shuffled.slice(0, limit);
-  }
+  };
 
   $scope.selectAnswers = function(playerIndex, card) {
     $scope.selectedAnswers[playerIndex] = card;
-  }
+    console.log($scope.selectedAnswers);
+  };
 
 }])
 .service("sharedProperties", function(){
@@ -50,9 +58,19 @@ angular.module('CardsAgainstAssembly')
     setNumPlayers: function(value) {
       numPlayers = value;
     }
-  }
+  };
 });
 
 function pickCardIndex(size){
   return Math.floor(Math.random() * size);
+}
+
+function shuffleArray(arr, limit) {
+  if(limit > arr.length) {
+    limit = arr.length;
+  }
+  var shuffled = arr.sort(function() {
+    return 0.5 - Math.random();
+  });
+  return shuffled.slice(0, limit);
 }
